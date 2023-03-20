@@ -178,7 +178,83 @@
   font-size: 20px;
 }
 
+.taskDisplay {
+  height: 650px;
+}
+
 .tasksDates {
   border: 1px solid #828282;
   border-radius: 5px;
+}
+
+.messageOption {
+  width: 126px;
+}
+
+@media screen and (max-height: 800px) {
+  .searchInput {
+    height: 35px;
+  }
+
+  .menus {
+    width: 45px;
+    height: 45px;
+  }
+
+  .menu1 {
+    margin-bottom: 27px;
+    margin-right: 34px;
+    margin-top: 20px;
+    width: 48px;
+    height: 48px;
+  }
+
+  .workspace {
+    width: 474px;
+    height: 477px;
+    margin-bottom: 80px;
+    margin-right: 24px;
+    border-radius: 5px;
+  }
+
+  .inboxSearch {
+    width: 440px;
+  }
+
+  .person {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .name {
+    font-size: 12px;
+  }
+  
+  .photoProfile {
+    width: 20px;
+    height: 20px;
+  }
+
+  .dates {
+    font-size: 8px;
+  }
+
+  .displayChat {
+    height: 344px;
+    width: 466px;
+  }
+
+  .formInputs {
+    width: 340px;
+    height: 35px;
+  }
+  
+  .submitInputs {
+    width: 76px;
+    height: 35px;
+  }
+
+  .taskDisplay {
+    height: 390px;
+  }
 }

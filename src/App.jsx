@@ -21,6 +21,8 @@ function App() {
 	const [taskShow, setTaskShow] = useState(false);
 	const [isLoadingPost, setIsLoadingPost] = useState(true);
 	const [isLoadingComment, setIsLoadingComment] = useState(true);
+	const [messageOption, setMessageOption] = useState(false);
+	const [messageIndex, setMessageIndex] = useState();
 
 	const menuShow = () => {
 		setMenuIsActive((state) => !state);
@@ -40,6 +42,33 @@ function App() {
 		} else {
 			setTaskShow((state) => !state);
 		}
+	};
+	const handleMessageOption = (e, index) => {
+		e.preventDefault();
+		setMessageIndex(index);
+		setMessageOption((state) => !state);
+	};
+
+	const handleDeleteMessage = (e, item) => {
+		e.preventDefault();
+		deleteMessage(item);
+	};
+
+	const deleteMessage = (item) => {
+		axios
+			.delete(`https://dummyapi.io/data/v1/comment/${item.id}`, {
+				headers: {
+					"app-id": "641071802115a45e30a446fc",
+				},
+			})
+			.then((result) => {
+				console.log(result);
+				getComment(item.post);
+				setMessageOption((state) => !state);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
 	};
 
 	// Get post
@@ -67,6 +96,7 @@ function App() {
 	const [userMessage, setUserMessage] = useState([]);
 	const [postById, setPostById] = useState([]);
 	const [openInbox, setOpenInbox] = useState(false);
+	console.log(userMessage);
 
 	const getComment = (id, handleSuccess) => {
 		axios
@@ -328,7 +358,33 @@ function App() {
 																You
 															</p>
 															<div className="d-flex">
-																<button className="btn options">...</button>
+																{messageOption === true &&
+																messageIndex === index ? (
+																	<div>
+																		<div
+																			type="button"
+																			className="messageOption ps-2 py-2 text-primary rounded-top border">
+																			Edit
+																		</div>
+																		<div
+																			type="button"
+																			className="text-danger ps-2 py-2 rounded-bottom border border-top-0"
+																			onClick={(e) =>
+																				handleDeleteMessage(e, item)
+																			}>
+																			Delete
+																		</div>
+																	</div>
+																) : (
+																	<></>
+																)}
+																<button
+																	className="btn options"
+																	onClick={(e) =>
+																		handleMessageOption(e, index)
+																	}>
+																	...
+																</button>
 																<p className="p-3 sentMessage rounded">
 																	{item.message}
 																	<span className="d-block timestamp">
@@ -479,96 +535,98 @@ function App() {
 								</button>
 							</div>
 						</div>
-						{tasks.length > 0 ? (
-							tasks.map((item, index) => (
-								<div key={index}>
-									<div
-										className="accordion accordion-flush border-bottom"
-										id={`accordionFlushExample${index}`}>
-										<div className="accordion-item">
-											<div className="form-check">
-												{item.finish === true ? (
-													<input
-														className="form-check-input taskCheck"
-														type="checkbox"
-														value=""
-														id="flexCheckDefault"
-														onChange={(e) => handleCheck(e, item.id)}
-														defaultChecked={true}
-													/>
-												) : (
-													<input
-														className="form-check-input taskCheck"
-														type="checkbox"
-														value=""
-														id="flexCheckDefault"
-														onChange={(e) => handleCheck(e, item.id)}
-														defaultChecked={false}
-													/>
-												)}
-												<h2
-													className="accordion-header"
-													id={`flush-headingOne${index}`}>
-													<button
-														className={
-															item.finish === true
-																? `accordion-button collapsed taskTitle text-decoration-line-through text-secondary`
-																: `accordion-button collapsed taskTitle`
-														}
-														type="button"
-														data-bs-toggle="collapse"
-														data-bs-target={`#flush-collapseOne${index}`}
-														aria-expanded="false"
-														aria-controls={`flush-collapseOne${index}`}>
-														{item.title}
-													</button>
-												</h2>
-											</div>
-											<div
-												id={`flush-collapseOne${index}`}
-												className="accordion-collapse collapse"
-												aria-labelledby="flush-headingOne"
-												data-bs-parent={`#accordionFlushExample${index}`}>
-												<div className="accordion-body">
-													<div className="d-flex justify-content-between">
+						<div className="overflow-auto taskDisplay">
+							{tasks.length > 0 ? (
+								tasks.map((item, index) => (
+									<div key={index}>
+										<div
+											className="accordion accordion-flush border-bottom"
+											id={`accordionFlushExample${index}`}>
+											<div className="accordion-item">
+												<div className="form-check">
+													{item.finish === true ? (
+														<input
+															className="form-check-input taskCheck"
+															type="checkbox"
+															value=""
+															id="flexCheckDefault"
+															onChange={(e) => handleCheck(e, item.id)}
+															defaultChecked={true}
+														/>
+													) : (
+														<input
+															className="form-check-input taskCheck"
+															type="checkbox"
+															value=""
+															id="flexCheckDefault"
+															onChange={(e) => handleCheck(e, item.id)}
+															defaultChecked={false}
+														/>
+													)}
+													<h2
+														className="accordion-header"
+														id={`flush-headingOne${index}`}>
+														<button
+															className={
+																item.finish === true
+																	? `accordion-button collapsed taskTitle text-decoration-line-through text-secondary`
+																	: `accordion-button collapsed taskTitle`
+															}
+															type="button"
+															data-bs-toggle="collapse"
+															data-bs-target={`#flush-collapseOne${index}`}
+															aria-expanded="false"
+															aria-controls={`flush-collapseOne${index}`}>
+															{item.title}
+														</button>
+													</h2>
+												</div>
+												<div
+													id={`flush-collapseOne${index}`}
+													className="accordion-collapse collapse"
+													aria-labelledby="flush-headingOne"
+													data-bs-parent={`#accordionFlushExample${index}`}>
+													<div className="accordion-body">
+														<div className="d-flex justify-content-between">
+															<div className="d-flex ms-3">
+																<div className="me-3">
+																	<img
+																		src={schedule}
+																		alt="date"
+																	/>
+																</div>
+																<input
+																	type="date"
+																	defaultValue={item.date}
+																	onChange={(e) => handleDate(e, item.id)}
+																	className="tasksDates p-1"
+																/>
+															</div>
+															<button
+																className="btn rounded border border-secondary text-danger"
+																onClick={(e) => handleDelete(e, item.id)}>
+																Delete
+															</button>
+														</div>
 														<div className="d-flex ms-3">
 															<div className="me-3">
 																<img
-																	src={schedule}
-																	alt="date"
+																	src={edit}
+																	alt="description"
 																/>
 															</div>
-															<input
-																type="date"
-																defaultValue={item.date}
-																onChange={(e) => handleDate(e, item.id)}
-																className="tasksDates p-1"
-															/>
+															<p>{item.description}</p>
 														</div>
-														<button
-															className="btn rounded border border-secondary text-danger"
-															onClick={(e) => handleDelete(e, item.id)}>
-															Delete
-														</button>
-													</div>
-													<div className="d-flex ms-3">
-														<div className="me-3">
-															<img
-																src={edit}
-																alt="description"
-															/>
-														</div>
-														<p>{item.description}</p>
 													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							))
-						) : (
-							<></>
-						)}
+								))
+							) : (
+								<></>
+							)}
+						</div>
 					</div>
 				) : (
 					<></>
